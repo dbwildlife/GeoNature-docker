@@ -261,3 +261,9 @@ Il faut ensuite aller dans le container de _PGAdmin_ pour copier le dump dans le
 Dans PGAdmin, sur votre nouvelle base, choisissez l'option _Restore_, choisissez le fichier (attention à bien afficher tous les types de fichiers). Dans les _Restore options_, cochez les _Do not save_ _Owner_ et _Privilege_.
 
 _Il peut y avoir quelques erreurs, vérifiez si elles sont graves ou non (les erreurs de création de comptes ne sont pas graves)._
+
+#### Générer une image publiable
+
+```
+docker build -t <montag> -f app/Dockerfile.embed .
+```
