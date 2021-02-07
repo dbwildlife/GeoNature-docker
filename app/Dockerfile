@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:buster-slim
 
 LABEL maintainer="BRGM"
 
@@ -13,7 +13,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y update \
                 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info \
                 postgresql-client logrotate wait-for-it \
                 locales locales-all unzip git libsm6 libxext6 libxrender-dev \
-                curl software-properties-common \
+                curl software-properties-common nano vim \
     && ln -s /usr/bin/pip3 /usr/local/bin/pip \
     && apt-get clean
 
@@ -23,9 +23,9 @@ ENV LANGUAGE fr_FR:fr
 ENV LC_ALL fr_FR.UTF-8
 
 RUN pip3 install --upgrade pip virtualenv virtualenvwrapper
-ADD ./utils.lib.sh /usr/local/
+ADD ./app/utils.lib.sh /usr/local/
 
-ADD ./launch_app.sh /
+ADD ./app/launch_app.sh /
 RUN chmod a+rx /launch_app.sh /usr/local/utils.lib.sh
 
 RUN mkdir /home/geonatureadmin \
@@ -34,16 +34,20 @@ RUN mkdir /home/geonatureadmin \
 
 RUN echo "geonatureadmin ALL = (ALL) NOPASSWD: ALL" > /etc/sudoers.d/geonatureadmin
 
-ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+ADD ./app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+ADD ./bootstrap_files /mnt_bootstrap_files
 
-RUN mkdir /geonature /bootstrap_files /mnt_bootstrap_files && chown geonatureadmin. /geonature /bootstrap_files
+RUN mkdir /geonature /bootstrap_files && chown geonatureadmin. /geonature /bootstrap_files /mnt_bootstrap_files
+
 VOLUME /geonature
-VOLUME /mnt_bootstrap_files
+# VOLUME /mnt_bootstrap_files
 
 USER geonatureadmin
 
 RUN cp /etc/skel/.bashrc /etc/skel/.bash_logout /etc/skel/.profile /home/geonatureadmin/ \
     && pip install MarkupSafe==1.0
 RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+
+WORKDIR /geonature
 
 ENTRYPOINT ["/launch_app.sh"]

@@ -23,9 +23,9 @@ ENV LANGUAGE fr_FR:fr
 ENV LC_ALL fr_FR.UTF-8
 
 RUN pip3 install --upgrade pip virtualenv virtualenvwrapper
-ADD .app/utils.lib.sh /usr/local/
+ADD ./app/utils.lib.sh /usr/local/
 
-ADD .app/launch_app.sh /
+ADD ./app/launch_app.sh /
 RUN chmod a+rx /launch_app.sh /usr/local/utils.lib.sh
 
 RUN mkdir /home/geonatureadmin \
@@ -34,7 +34,7 @@ RUN mkdir /home/geonatureadmin \
 
 RUN echo "geonatureadmin ALL = (ALL) NOPASSWD: ALL" > /etc/sudoers.d/geonatureadmin
 
-ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+ADD ./app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY ./bootstrap_files/ /bootstrap_files
 RUN mkdir /geonature /mnt_bootstrap_files && chown geonatureadmin. /geonature /bootstrap_files
@@ -47,5 +47,16 @@ USER geonatureadmin
 RUN cp /etc/skel/.bashrc /etc/skel/.bash_logout /etc/skel/.profile /home/geonatureadmin/ \
     && pip install MarkupSafe==1.0
 RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+
+WORKDIR /geonature
+
+# TaxHub port
+EXPOSE 5000
+# UsersHub port
+EXPOSE 5001
+# GeoNature api port
+EXPOSE 8000
+# Atlas Api port
+EXPOSE 8080
 
 ENTRYPOINT ["/launch_app.sh"]

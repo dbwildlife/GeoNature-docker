@@ -152,3 +152,33 @@ function wait_for_file
     fi
     while [ ! -f $file_to_wait ]; do sleep $repeat_timer; echo "${wait_message}"; done
 }
+
+
+# wait for db ready
+function wait_for_db
+{
+    
+    until PGPASSWORD=${POSTGRES_PASS} psql -h "${POSTGRES_HOST:-db}" -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -c '\q'; do
+        >&2 echo "db ${POSTGRES_DB} is unavailable - sleeping"
+        sleep 1
+    done
+    
+    >&2 echo "db ${POSTGRES_DB} is up - executing command"
+}
+
+# wait for db ready with specific extention (particularly postgis)
+function wait_for_dbextension
+{
+    local extension=$1
+    wait_message="Waiting foir extension '${extension}' in installed in db ${POSTGRES_DB}"
+    ready_message="Extension '${extension}' is already installed in db ${POSTGRES_DB}"
+    repeat_timer=2
+    while [ ! "$(PGPASSWORD=${POSTGRES_PASS} psql -qtAX -h ${POSTGRES_HOST:-db} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c "select exists(select 1 from pg_available_extensions where installed_version is not null and name like '${extension}');")" == "t" ]; do
+        echo "$(date '+%H:%M:%S') $wait_message"
+        sleep $repeat_timer
+    done
+    echo "${POSTGRES_DB} ready, continue"
+    
+}
+
+

@@ -32,6 +32,12 @@ if [[ ! -f /$script_home_dir/sysfiles/usershub_installed ]] || [[ ! -f /$script_
     _verbose_echo "${green}launch_app - ${nocolor}Lancement de supervisor en tâche de fond"
     sudo /usr/bin/supervisord &
 
+    _verbose_echo "${green}launch_app - ${nocolor}Vérification des prérequis de la base de données"
+    if [[ ! -f /$script_home_dir/sysfiles/db_initialized ]]; then
+	_verbose_echo "${green}launch_app - ${nocolor}Initialisation de la base de données"
+	/bin/bash ${bootstrap_dir}/scripts/init_db.sh
+    fi
+
     _verbose_echo "${green}launch_app - ${nocolor}Vérification des installations des applications"
     if [[ ! -f /$script_home_dir/sysfiles/usershub_installed ]]; then
         _verbose_echo "${green}launch_app - ${nocolor}Installation d'Usershub nécessaire"
@@ -45,9 +51,14 @@ if [[ ! -f /$script_home_dir/sysfiles/usershub_installed ]] || [[ ! -f /$script_
         _verbose_echo "${green}launch_app - ${nocolor}Installation de GeoNature nécessaire"
         /bin/bash ${bootstrap_dir}/scripts/gn-install.sh
     fi
-    if [[ ! -f /$script_home_dir/sysfiles/atlas_installed ]]; then
+    if [[ $INSTALL_ATLAS == "true" ]]; then
         _verbose_echo "${green}launch_app - ${nocolor}Installation d'Atlas nécessaire"
-        /bin/bash ${bootstrap_dir}/scripts/ga-install.sh
+        if [[ ! -f /$script_home_dir/sysfiles/atlas_installed ]]; then
+            _verbose_echo "${green}launch_app - ${nocolor}Installation d'Atlas nécessaire"
+            /bin/bash ${bootstrap_dir}/scripts/ga-install.sh
+        fi
+    else
+        _verbose_echo "${orange}launch_app - ${nocolor}Installation d'Atlas désactivée"
     fi
     _verbose_echo "${green}launch_app - ${nocolor}Arrêt de supervisor en tâche de fond"
     sudo supervisorctl stop all
