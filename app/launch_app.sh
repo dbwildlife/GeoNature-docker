@@ -16,7 +16,7 @@ _verbose_echo "${green}launch_app - ${nocolor}Droits sur le répertoire ${script
 sudo chown -R ${geonature_user}. ${script_home_dir}
 
 _verbose_echo "${green}launch_app - ${nocolor}Attente de la base de données..."
-wait_for_restart db:5432
+wait_for_restart ${POSTGRES_HOST:-db}:5432
 
 ## Start supervisor
 _verbose_echo "${green}launch_app - ${nocolor}Copie de la conf de supervisor (si existe)"
