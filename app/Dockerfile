@@ -40,7 +40,6 @@ ADD ./bootstrap_files /mnt_bootstrap_files
 RUN mkdir /geonature /bootstrap_files && chown geonatureadmin. /geonature /bootstrap_files /mnt_bootstrap_files
 
 VOLUME /geonature
-# VOLUME /mnt_bootstrap_files
 
 USER geonatureadmin
 
@@ -49,5 +48,14 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_logout /etc/skel/.profile /home/geonatu
 RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 
 WORKDIR /geonature
+# TaxHub port
+EXPOSE 5000
+# UsersHub port
+EXPOSE 5001
+# GeoNature api port
+EXPOSE 8000
+# Atlas Api port
+EXPOSE 8080
+
 
 ENTRYPOINT ["/launch_app.sh"]

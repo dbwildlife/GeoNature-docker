@@ -13,7 +13,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y update \
                 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info \
                 postgresql-client logrotate wait-for-it \
                 locales locales-all unzip git libsm6 libxext6 libxrender-dev \
-                curl software-properties-common \
+                curl software-properties-common nano vim \
     && ln -s /usr/bin/pip3 /usr/local/bin/pip \
     && apt-get clean
 
