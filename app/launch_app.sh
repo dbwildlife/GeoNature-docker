@@ -16,7 +16,7 @@ _verbose_echo "${green}launch_app - ${nocolor}Droits sur le répertoire ${script
 sudo chown -R ${geonature_user}. ${script_home_dir}
 
 _verbose_echo "${green}launch_app - ${nocolor}Attente de la base de données..."
-wait_for_restart ${POSTGRES_HOST:-db}:5432
+wait_for_restart ${POSTGRES_HOST:-db}:${POSTGRES_PORT:-5432}
 
 ## Start supervisor
 _verbose_echo "${green}launch_app - ${nocolor}Copie de la conf de supervisor (si existe)"
@@ -35,7 +35,7 @@ if [[ ! -f /$script_home_dir/sysfiles/usershub_installed ]] || [[ ! -f /$script_
     _verbose_echo "${green}launch_app - ${nocolor}Vérification des prérequis de la base de données"
     if [[ ! -f /$script_home_dir/sysfiles/db_initialized ]]; then
 	_verbose_echo "${green}launch_app - ${nocolor}Initialisation de la base de données"
-	/bin/bash ${bootstrap_dir}/scripts/init_db.sh
+	/bin/bash ${bootstrap_dir}/sysfiles/init_db.sh
     fi
 
     _verbose_echo "${green}launch_app - ${nocolor}Vérification des installations des applications"
