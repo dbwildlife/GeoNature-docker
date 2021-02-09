@@ -51,8 +51,8 @@ if [[ ! -f /$script_home_dir/sysfiles/usershub_installed ]] || [[ ! -f /$script_
         _verbose_echo "${green}launch_app - ${nocolor}Installation de GeoNature nécessaire"
         /bin/bash ${bootstrap_dir}/scripts/gn-install.sh
     fi
-    if [[ $INSTALL_ATLAS == "true" ]]; then
-        _verbose_echo "${green}launch_app - ${nocolor}Installation d'Atlas nécessaire"
+    if ${INSTALL_ATLAS:-false}; then
+        _verbose_echo "${green}launch_app - ${nocolor}Installation d'Atlas activée"
         if [[ ! -f /$script_home_dir/sysfiles/atlas_installed ]]; then
             _verbose_echo "${green}launch_app - ${nocolor}Installation d'Atlas nécessaire"
             /bin/bash ${bootstrap_dir}/scripts/ga-install.sh
