@@ -4,7 +4,7 @@ script_home_dir=/geonature
 bootstrap_dir=/bootstrap_files
 verbose=1
 
-GN_VERSION="2.5.5"
+GN_VERSION="2.6.0"
 export GN_HOME=${script_home_dir}/geonature
 
 . /usr/local/utils.lib.sh
